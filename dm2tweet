@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+var Twit = require('twit');
+var config = require(__dirname + '/config.json');
+var twit = new Twit(config.twitter);
+
+twit.stream('user').on('tweet', function(data) {
+	if (!data.direct_message || config.handles.indexOf(data.direct_message.sender.screen_name) < 0)
+		return;
+
+	var message = data.direct_message.text;
+
+	if (config.attribute)
+		message = 'via @' + data.direct_message.sender.screen_name + ': ' + message;
+
+	twit.post('statuses/update', { status: message }, function(err, reply) {
+		if (err)
+			console.error('error:', err);
+	});
+});

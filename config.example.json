@@ -1,0 +1,17 @@
+{
+	"//": "Whether or not we should attribute the tweet author",
+	"attribute": false,
+
+	"//": "List of handles that we will retweet messages for",
+	"handles": [
+		"rummik"
+	],
+
+	"//": "Twitter connection settings",
+	"twitter": {
+		"consumer_key": "",
+		"consumer_secret": "",
+		"access_token": "",
+		"access_token_secret": ""
+	}
+}
