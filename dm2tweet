@@ -3,14 +3,36 @@ var Twit = require('twit');
 var config = require(__dirname + '/config.json');
 var twit = new Twit(config.twitter);
 
+config.handles = config.handles.map(function(handle) {
+	return handle.toLowerCase();
+});
+
+twit.get('account/settings', function(err, settings) {
+	if (err)
+		console.log(err);
+
+	console.log('Connected as %s', settings.screen_name);
+});
+
 twit.stream('user').on('tweet', function(data) {
-	if (!data.direct_message || config.handles.indexOf(data.direct_message.sender.screen_name) < 0)
+	var dm = data.direct_message;
+	if (!dm)
 		return;
 
-	var message = data.direct_message.text;
+	var sender = dm.sender.screen_name;
+	var message = dm.text;
 
-	if (config.attribute)
-		message = 'via @' + data.direct_message.sender.screen_name + ': ' + message;
+	if (config.handles.indexOf(sender.toLowerCase()) < 0) {
+		console.log('Access denied for user @%s', sender);
+		return;
+	}
+
+	if (config.attribute) {
+		message = 'via @' + sender + ': ' + message;
+		console.log('Tweeting message:', message);
+	} else {
+		console.log('Tweeting message from @%s: %s', sender, message);
+	}
 
 	twit.post('statuses/update', { status: message }, function(err, reply) {
 		if (err)
