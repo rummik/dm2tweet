@@ -17,3 +17,5 @@ twit.stream('user').on('tweet', function(data) {
 			console.error('error:', err);
 	});
 });
+
+// vim: set ft=javascript :
